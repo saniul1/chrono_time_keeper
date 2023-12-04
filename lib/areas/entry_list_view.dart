@@ -166,7 +166,7 @@ class _EntryListViewState extends State<EntryListView> {
               Padding(
                 padding: const EdgeInsets.only(right: 20.0),
                 child: Text(
-                    commits.firstOrNull?.calculdateTimeString(total) ?? '0'),
+                    commits.firstOrNull?.calculdateTimeString(total) ?? ''),
               ),
             ],
           ),
