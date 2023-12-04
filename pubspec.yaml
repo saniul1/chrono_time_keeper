@@ -40,6 +40,7 @@ dependencies:
   flutter_persistent_value_notifier: ^1.0.8
   hotkey_manager: ^0.1.8
   macos_window_utils: ^1.4.0
+  window_manager: ^0.3.7
 
 dev_dependencies:
   flutter_test:
