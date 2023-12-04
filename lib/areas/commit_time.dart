@@ -41,7 +41,7 @@ class _CommitTimeState extends State<CommitTime> {
 
   @override
   Widget build(BuildContext context) {
-    final duration = CommitData.of(context).calculdateTime();
+    final duration = CommitData.of(context).calculateTime();
     final inHrs = duration.inHours;
     return Text(
       '${inHrs == 0 ? '' : '$inHrs hrs '}${duration.inMinutes % 60} min ${endTime.value == null ? ' ${duration.inSeconds % 60} sec' : ''}',

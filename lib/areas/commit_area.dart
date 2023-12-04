@@ -52,11 +52,16 @@ class _CommitAriaState extends State<CommitAria> {
             ),
             TimeStamp(
               setTime: (isDoubleTap) {
-                final duration = Duration(minutes: sliderValue.value.toInt());
                 if (endTime.value != null && !isDoubleTap) {
-                  endTime.value = endTime.value!.subtract(duration);
+                  final duration = Duration(minutes: sliderValue.value.toInt());
+                  final time = endTime.value!.subtract(duration);
+                  if (startTime.value != null &&
+                      time.isBefore(startTime.value!)) return;
+                  endTime.value = time;
                   return;
                 }
+                if (startTime.value != null &&
+                    DateTime.now().isBefore(startTime.value!)) return;
                 endTime.value = DateTime.now();
               },
               buildChild: (context) {

@@ -16,6 +16,8 @@ class _CommitInfoState extends State<CommitInfo> {
   bool _isAdd = true;
 
   void add() {
+    final duration = CommitData.of(context).calculateTime();
+    if (duration.inMinutes <= breakValue.value + sliderValue.value) return;
     if (!_isAdd) {
       setState(() {
         _isAdd = true;

@@ -31,7 +31,7 @@ class CommitData extends InheritedWidget {
   final DateTime? end;
   final double? breakBetween;
 
-  Duration calculdateTime() {
+  Duration calculateTime() {
     final endTime = end ?? DateTime.now();
     if (start != null) {
       return endTime.difference(start!) -
