@@ -2,12 +2,15 @@ import 'package:chrono_time_keeper/db/db.dart';
 import 'package:chrono_time_keeper/states/time_commit_info_states.dart';
 import 'package:chrono_time_keeper/themes/get_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_persistent_value_notifier/flutter_persistent_value_notifier.dart';
 
 import 'areas/commit_area.dart';
 import 'areas/entry_list_view.dart';
 import 'widgets/value_slider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initPersistentValueNotifier(prefix: 'io.github.chrono-time-keeper');
   runApp(const MyApp());
 }
 

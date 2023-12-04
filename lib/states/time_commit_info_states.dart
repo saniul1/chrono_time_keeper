@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_persistent_value_notifier/flutter_persistent_value_notifier.dart';
 
 class DoubleValue extends ValueNotifier<double> {
   DoubleValue(super.value);
 }
 
-final sliderValue = DoubleValue(0);
+final sliderValue = PersistentValueNotifier<double>(
+  initialValue: 0,
+  sharedPreferencesKey: 'slider-value',
+);
 final breakValue = DoubleValue(0);
 
 class DateTimeValue extends ValueNotifier<DateTime?> {

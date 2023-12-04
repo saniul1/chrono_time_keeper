@@ -37,6 +37,7 @@ dependencies:
   collection: ^1.17.2
   intl: ^0.18.1
   sqflite: ^2.3.0
+  flutter_persistent_value_notifier: ^1.0.8
 
 dev_dependencies:
   flutter_test:
