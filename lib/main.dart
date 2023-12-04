@@ -1,7 +1,6 @@
 import 'package:chrono_time_keeper/db/db.dart';
 import 'package:chrono_time_keeper/states/time_commit_info_states.dart';
 import 'package:chrono_time_keeper/themes/get_theme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_persistent_value_notifier/flutter_persistent_value_notifier.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -15,6 +14,7 @@ import 'widgets/value_slider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
     size: Size(600, 800),
@@ -27,14 +27,10 @@ void main() async {
     await windowManager.show();
     await windowManager.focus();
   });
-  await WindowManipulator.initialize();
-  WindowManipulator.makeTitlebarTransparent();
-  WindowManipulator.enableFullSizeContentView();
-  WindowManipulator.disableCloseButton();
-  WindowManipulator.hideZoomButton();
-  if (kDebugMode) {
-    await hotKeyManager.unregisterAll();
-  }
+
+  // if (kDebugMode) {
+  //   await hotKeyManager.unregisterAll();
+  // }
   HotKey hotKey = HotKey(
     KeyCode.keyQ,
     modifiers: [KeyModifier.alt],
@@ -52,7 +48,15 @@ void main() async {
       }
     },
   );
+
+  await WindowManipulator.initialize();
+  WindowManipulator.makeTitlebarTransparent();
+  WindowManipulator.enableFullSizeContentView();
+  WindowManipulator.disableCloseButton();
+  WindowManipulator.hideZoomButton();
+
   await initPersistentValueNotifier(prefix: 'io.github.chrono-time-keeper');
+
   runApp(const App());
 }
 
