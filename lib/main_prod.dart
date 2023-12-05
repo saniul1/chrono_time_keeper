@@ -1,11 +1,8 @@
-import 'dart:async';
+import 'flavors.dart';
 
-import 'package:chrono_time_keeper/before_run.dart';
-import 'package:flutter/material.dart';
+import 'main.dart' as runner;
 
-import 'app.dart';
-
-FutureOr<void> main() async {
-  await beforeRun();
-  runApp(const App());
+Future<void> main() async {
+  F.appFlavor = Flavor.prod;
+  await runner.main();
 }

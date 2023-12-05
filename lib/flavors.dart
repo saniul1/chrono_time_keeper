@@ -1,5 +1,6 @@
 enum Flavor {
   dev,
+  prod,
 }
 
 class F {
@@ -11,8 +12,11 @@ class F {
     switch (appFlavor) {
       case Flavor.dev:
         return 'Chrono-dev';
-      default:
+      case Flavor.prod:
         return 'Chrono';
+      default:
+        return 'title';
     }
   }
+
 }
