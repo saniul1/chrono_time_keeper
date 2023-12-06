@@ -190,7 +190,52 @@ class _EntryListViewState extends State<EntryListView> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(commit.action),
+                                          Expanded(
+                                            child: Stack(
+                                              children: [
+                                                Text(commit.action),
+                                                if (_isSearch)
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        right: 8.0,
+                                                      ),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .background,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
+                                                          child: Text(commit
+                                                                  .start
+                                                                  .isToday()
+                                                              ? 'Today'
+                                                              : commit.end
+                                                                      .isYesterday()
+                                                                  ? 'Yesterday'
+                                                                  : DateFormat(
+                                                                          'dd/MM')
+                                                                      .format(
+                                                                          day)),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                              ],
+                                            ),
+                                          ),
                                           SizedBox(
                                             width: 200,
                                             child: Row(
