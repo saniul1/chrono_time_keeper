@@ -10,7 +10,7 @@ class DB extends ChangeNotifier {
 
   Future<void> open() async {
     db = await openDatabase(
-        F.appFlavor != Flavor.dev ? 'chrono_db_dev.db' : 'chrono_db.db',
+        F.appFlavor == Flavor.dev ? 'chrono_db_dev.db' : 'chrono_db.db',
         version: 1, onCreate: (db, version) async {
       await db.execute('''
   CREATE TABLE chrono (

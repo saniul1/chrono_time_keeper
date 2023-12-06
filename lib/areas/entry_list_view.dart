@@ -137,7 +137,7 @@ class _EntryListViewState extends State<EntryListView> {
                             ? const Text('Yesterday')
                             : Text(DateFormat('dd/MM/yy').format(day)),
                   ),
-                const SizedBox(width: 60),
+                if (!_isSearch) const SizedBox(width: 60),
               ],
             ),
           ),
