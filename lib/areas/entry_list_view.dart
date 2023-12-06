@@ -16,6 +16,9 @@ class EntryListView extends StatefulWidget {
 
 class _EntryListViewState extends State<EntryListView> {
   DateTime day = DateTime.now();
+  bool _isSearch = false;
+  int _dayCount = 0;
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -25,6 +28,9 @@ class _EntryListViewState extends State<EntryListView> {
         day = DateTime.now();
       });
     });
+    _searchController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -32,47 +38,115 @@ class _EntryListViewState extends State<EntryListView> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      day = day.subtract(const Duration(days: 1));
-                    });
-                  },
-                  child: const Text('<')),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      day = DateTime.now();
-                    });
-                  },
-                  child: day.isToday()
-                      ? const Text('Today')
-                      : day.isYesterday()
-                          ? const Text('Yesterday')
-                          : Text(DateFormat('dd/MM/yy').format(day)),
+          padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+          child: SizedBox(
+            height: 36,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 60,
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _isSearch = !_isSearch;
+                      });
+                    },
+                    child: Icon(
+                      _isSearch ? Icons.search_off : Icons.search,
+                      size: 20,
+                      color: !_isSearch
+                          ? Theme.of(context).colorScheme.secondary
+                          : null,
+                    ),
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: day.isToday()
-                    ? null
-                    : () {
-                        setState(() {
-                          day = day.add(const Duration(days: 1));
-                        });
-                      },
-                child: const Text('>'),
-              ),
-            ],
+                if (_isSearch)
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: TextField(
+                              controller: _searchController,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                hintText: 'Search...',
+                                hintStyle: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color
+                                          ?.withOpacity(0.6),
+                                    ),
+                                border: InputBorder.none,
+                              ),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ),
+                        ValueIncrementor(
+                          onLeft: () {
+                            setState(() {
+                              _dayCount += 1;
+                            });
+                          },
+                          onRight: _dayCount == 0
+                              ? null
+                              : () {
+                                  setState(() {
+                                    _dayCount -= 1;
+                                  });
+                                },
+                          onTap: () {
+                            setState(() {
+                              _dayCount = 0;
+                            });
+                          },
+                          valueInText: Text('${_dayCount + 1}'),
+                        )
+                      ],
+                    ),
+                  )
+                else
+                  ValueIncrementor(
+                    onLeft: () {
+                      setState(() {
+                        day = day.subtract(const Duration(days: 1));
+                      });
+                    },
+                    onTap: () {
+                      setState(() {
+                        day = DateTime.now();
+                      });
+                    },
+                    onRight: day.isToday()
+                        ? null
+                        : () {
+                            setState(() {
+                              day = day.add(const Duration(days: 1));
+                            });
+                          },
+                    valueInText: day.isToday()
+                        ? const Text('Today')
+                        : day.isYesterday()
+                            ? const Text('Yesterday')
+                            : Text(DateFormat('dd/MM/yy').format(day)),
+                  ),
+                const SizedBox(width: 60),
+              ],
+            ),
           ),
         ),
         FutureBuilder(
-          future: DB.instance.getChronoForDay(day),
+          future: _isSearch
+              ? DB.instance
+                  .getChronoForActionAndDays(_searchController.text, _dayCount)
+              : DB.instance.getChronoForDay(day),
           builder: (context, data) {
             if (!data.hasData) {
               return const Text('fetching data...');
@@ -95,35 +169,44 @@ class _EntryListViewState extends State<EntryListView> {
                             itemBuilder: (context, i) {
                               final commit = commits[i];
                               return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20.0, vertical: 10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(commit.action),
-                                        SizedBox(
-                                          width: 200,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text('${commit.breakValue} min'),
-                                              Text(commit
-                                                  .calculdateTimeString()),
-                                            ],
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 6.0),
+                                child: GestureDetector(
+                                  onDoubleTap: () {
+                                    // TODO: add confirm dialog
+                                    // DB.instance.deleteEntryById(commit.id);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0, vertical: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(commit.action),
+                                          SizedBox(
+                                            width: 200,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    '${commit.breakValue} min'),
+                                                Text(commit
+                                                    .calculdateTimeString()),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -172,6 +255,45 @@ class _EntryListViewState extends State<EntryListView> {
           ),
         );
       }),
+    );
+  }
+}
+
+class ValueIncrementor extends StatelessWidget {
+  const ValueIncrementor({
+    super.key,
+    required this.onRight,
+    required this.onLeft,
+    required this.onTap,
+    required this.valueInText,
+  });
+
+  final void Function()? onLeft;
+  final void Function()? onRight;
+  final void Function()? onTap;
+  final Text valueInText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: onLeft,
+          child: const Text('<'),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: GestureDetector(
+            onTap: onTap,
+            child: valueInText,
+          ),
+        ),
+        TextButton(
+          onPressed: onRight,
+          child: const Text('>'),
+        ),
+      ],
     );
   }
 }

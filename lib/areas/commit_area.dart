@@ -126,6 +126,7 @@ class _CommitAriaState extends State<CommitAria> {
                                 return GestureDetector(
                                   onTap: () {
                                     onSelected(option);
+                                    actionController.text = option;
                                   },
                                   child: Focus(
                                     child: ListTile(
@@ -178,6 +179,7 @@ class _CommitAriaState extends State<CommitAria> {
             InkWell(
               onTap: () async {
                 final data = CommitData.of(context);
+                print(actionController.text);
                 if (data.start != null && actionController.text != '') {
                   await DB.instance.addChrono(
                     data.start!,
