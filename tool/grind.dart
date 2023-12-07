@@ -24,7 +24,7 @@ build() async {
   final pubspec = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
   final version = pubspec['version'] as String;
 
-  final dir = Directory('release/$version/');
+  final dir = Directory('releases/$version/');
   if (!dir.existsSync()) {
     dir.createSync(recursive: true);
   }
