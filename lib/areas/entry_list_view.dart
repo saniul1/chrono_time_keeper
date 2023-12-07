@@ -218,18 +218,29 @@ class _EntryListViewState extends State<EntryListView> {
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                  .all(4.0),
-                                                          child: Text(commit
-                                                                  .start
-                                                                  .isToday()
-                                                              ? 'Today'
-                                                              : commit.end
-                                                                      .isYesterday()
-                                                                  ? 'Yesterday'
-                                                                  : DateFormat(
-                                                                          'dd/MM')
-                                                                      .format(
-                                                                          day)),
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      4.0,
+                                                                  vertical: 2),
+                                                          child: Text(
+                                                            commit.start
+                                                                    .isToday()
+                                                                ? 'Today'
+                                                                : commit.end
+                                                                        .isYesterday()
+                                                                    ? 'Yesterday'
+                                                                    : DateFormat(
+                                                                            'dd/MM')
+                                                                        .format(
+                                                                            day),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyMedium
+                                                                ?.copyWith(
+                                                                  fontSize: 10,
+                                                                ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
