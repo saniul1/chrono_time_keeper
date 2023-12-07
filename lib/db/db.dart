@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chrono_time_keeper/flavors.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -9,10 +11,14 @@ class DB extends ChangeNotifier {
   late final Database db;
 
   Future<void> open() async {
+    String dbName =
+        F.appFlavor == Flavor.dev ? 'chrono_db_dev.db' : 'chrono_db.db';
+    if (F.appFlavor == Flavor.dev) await deleteDatabase(dbName);
     db = await openDatabase(
-        F.appFlavor == Flavor.dev ? 'chrono_db_dev.db' : 'chrono_db.db',
-        version: 1, onCreate: (db, version) async {
-      await db.execute('''
+      dbName,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''
   CREATE TABLE chrono (
     id INTEGER PRIMARY KEY,
     start TIMESTAMP NOT NULL,
@@ -21,7 +27,9 @@ class DB extends ChangeNotifier {
     action TEXT NOT NULL
   )
 ''');
-    });
+      },
+    );
+    if (F.appFlavor == Flavor.dev) _populateWithMockData();
     return;
   }
 
@@ -106,5 +114,33 @@ class DB extends ChangeNotifier {
       whereArgs: [id],
     );
     notifyListeners();
+  }
+
+  Future<void> _populateWithMockData() async {
+    if (F.appFlavor == Flavor.dev) {
+      // Populate with random data
+      var now = DateTime.now();
+      var random = Random();
+      for (var i = 0; i < 10; i++) {
+        var entries =
+            random.nextInt(10) + 1; // Random number of entries between 1 and 10
+        for (var j = 0; j < entries; j++) {
+          var start =
+              now.subtract(Duration(days: i, hours: random.nextInt(24)));
+          var end = start.add(Duration(hours: random.nextInt(8)));
+          var breakValue = random.nextInt(30);
+          var action = 'Random Action ${random.nextInt(4)}';
+          await db.insert(
+            'chrono',
+            {
+              'start': start.toIso8601String(),
+              'end': end.toIso8601String(),
+              'break': breakValue,
+              'action': action,
+            },
+          );
+        }
+      }
+    }
   }
 }

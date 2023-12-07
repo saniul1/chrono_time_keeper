@@ -13,13 +13,13 @@ class CommitDataModel {
     required this.action,
   });
 
-  Duration calculdateTime() {
+  Duration calculateTime() {
     final endTime = end;
     return endTime.difference(start) - Duration(minutes: breakValue);
   }
 
-  String calculdateTimeString([Duration? duration]) {
-    duration ??= calculdateTime();
+  String calculateTimeString([Duration? duration]) {
+    duration ??= calculateTime();
     final inHrs = duration.inHours;
     return '${inHrs == 0 ? '' : '$inHrs hrs '}${duration.inMinutes % 60} min';
   }

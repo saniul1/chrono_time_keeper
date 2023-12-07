@@ -9,6 +9,11 @@ final sliderValue = PersistentValueNotifier<double>(
   initialValue: 0,
   sharedPreferencesKey: 'slider-value',
 );
+final trackValue = PersistentValueNotifier<int>(
+  initialValue: 0,
+  sharedPreferencesKey: 'track-value',
+);
+
 final breakValue = DoubleValue(0);
 
 class DateTimeValue extends ValueNotifier<DateTime?> {
