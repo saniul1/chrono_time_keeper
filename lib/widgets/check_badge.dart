@@ -73,6 +73,15 @@ class _CheckBadgeState extends State<CheckBadge> {
               ),
               actions: <Widget>[
                 TextButton(
+                  child: const Text('Track all'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      controller.text = '';
+                    });
+                  },
+                ),
+                TextButton(
                   child: const Text('OK'),
                   onPressed: () {
                     Navigator.of(context).pop();
