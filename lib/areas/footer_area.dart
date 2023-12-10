@@ -1,6 +1,7 @@
 import 'package:chrono_time_keeper/models/commit_data_model.dart';
 import 'package:chrono_time_keeper/widgets/check_badge.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Footer extends StatelessWidget {
   const Footer({
@@ -20,15 +21,26 @@ class Footer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              '⌥Q',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.color
-                        ?.withOpacity(0.5),
-                  ),
+            GestureDetector(
+              onTap: () async {
+                PackageInfo info = await PackageInfo.fromPlatform();
+                // ignore: use_build_context_synchronously
+                showAboutDialog(
+                  applicationName: info.appName,
+                  applicationVersion: info.version,
+                  context: context,
+                );
+              },
+              child: Text(
+                '⌥Q',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.color
+                          ?.withOpacity(0.5),
+                    ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
