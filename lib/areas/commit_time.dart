@@ -15,8 +15,8 @@ class CommitTime extends StatefulWidget {
 
 class _CommitTimeState extends State<CommitTime> {
   Timer? _timer;
-
   bool _listen = false;
+  bool _isPaused = false;
 
   @override
   void initState() {
@@ -47,17 +47,56 @@ class _CommitTimeState extends State<CommitTime> {
     final duration = CommitData.of(context).calculateTime();
     final inHrs = duration.inHours;
     return GestureDetector(
-      onDoubleTap: () {
-        _listen = false;
-        startTime.value = null;
-        endTime.value = null;
-        breakValue.value = 0;
+      onTap: () {
         setState(() {
-          _listen = true;
+          _isPaused = !_isPaused;
+          if (_isPaused) {
+            _timer?.cancel();
+          } else {
+            _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+              if (_listen) setState(() {});
+            });
+          }
         });
       },
+      onDoubleTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [Text('Reset Times')],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Reset'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _listen = false;
+                    startTime.value = null;
+                    endTime.value = null;
+                    breakValue.value = 0;
+                    setState(() {
+                      _listen = true;
+                    });
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
       child: Text(
-        '${inHrs == 0 ? '' : '$inHrs hrs '}${duration.inMinutes % 60} min ${endTime.value == null ? ' ${duration.inSeconds % 60} sec' : ''}',
+        _isPaused
+            ? 'Paused'
+            : '${inHrs == 0 ? '' : '$inHrs hrs '}${duration.inMinutes % 60} min ${endTime.value == null ? ' ${duration.inSeconds % 60} sec' : ''}',
       ),
     );
   }
