@@ -30,6 +30,7 @@ class _CheckBadgeState extends State<CheckBadge> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
+                    autofocus: true,
                     controller: controller,
                     decoration: InputDecoration(
                       hintText: 'What would you like to track',
@@ -73,7 +74,7 @@ class _CheckBadgeState extends State<CheckBadge> {
               ),
               actions: <Widget>[
                 TextButton(
-                  child: const Text('Track all'),
+                  child: const Text('All'),
                   onPressed: () {
                     Navigator.of(context).pop();
                     setState(() {
