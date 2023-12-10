@@ -24,6 +24,7 @@ class _CommitTimeState extends State<CommitTime> {
     super.initState();
     startTime.addListener(() {
       _timer?.cancel();
+      if (_isPaused) _isPaused = false;
       if (startTime.value != null) {
         _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
           if (_listen) setState(() {});
@@ -49,6 +50,7 @@ class _CommitTimeState extends State<CommitTime> {
     return GestureDetector(
       onTap: () {
         setState(() {
+          if (startTime.value == null) return;
           _isPaused = !_isPaused;
           if (_isPaused) {
             _timer?.cancel();
