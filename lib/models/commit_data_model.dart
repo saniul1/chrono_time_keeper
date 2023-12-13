@@ -1,21 +1,21 @@
+import 'package:flutter/material.dart';
+
 class CommitDataModel {
   final int id;
-  final DateTime start;
-  final DateTime end;
+  final DateTimeRange timeRange;
   final int breakValue;
   final String action;
 
   CommitDataModel({
     required this.id,
-    required this.start,
-    required this.end,
+    required this.timeRange,
     required this.breakValue,
     required this.action,
   });
 
   Duration calculateTime() {
-    final endTime = end;
-    return endTime.difference(start) - Duration(minutes: breakValue);
+    final endTime = timeRange.end;
+    return endTime.difference(timeRange.start) - Duration(minutes: breakValue);
   }
 
   String calculateTimeString([Duration? duration]) {
@@ -27,11 +27,23 @@ class CommitDataModel {
   factory CommitDataModel.fromMap(Map<String, dynamic> map) {
     return CommitDataModel(
       id: map['id'],
-      start: DateTime.parse(map['start']),
-      end: DateTime.parse(map['end']),
+      timeRange: DateTimeRange(
+          start: DateTime.parse(map['start']), end: DateTime.parse(map['end'])),
       breakValue: map['break'],
       action: map['action'],
     );
+  }
+
+  static List<DateTimeRange> dateRangeFromListOfMap(
+      List<Map<String, dynamic>> data) {
+    return data
+        .map(
+          (map) => DateTimeRange(
+            start: DateTime.parse(map['start']),
+            end: DateTime.parse(map['end']),
+          ),
+        )
+        .toList();
   }
 
   static List<CommitDataModel> fromListOfMap(List<Map<String, dynamic>> data) {

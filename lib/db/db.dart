@@ -117,29 +117,29 @@ class DB extends ChangeNotifier {
   }
 
   Future<void> _populateWithMockData() async {
-    if (F.appFlavor == Flavor.dev) {
-      // Populate with random data
-      var now = DateTime.now();
-      var random = Random();
-      for (var i = 0; i < 10; i++) {
-        var entries =
-            random.nextInt(10) + 1; // Random number of entries between 1 and 10
-        for (var j = 0; j < entries; j++) {
-          var start =
-              now.subtract(Duration(days: i, hours: random.nextInt(24)));
-          var end = start.add(Duration(hours: random.nextInt(8)));
-          var breakValue = random.nextInt(30);
-          var action = 'Random Action ${random.nextInt(4)}';
-          await db.insert(
-            'chrono',
-            {
-              'start': start.toIso8601String(),
-              'end': end.toIso8601String(),
-              'break': breakValue,
-              'action': action,
-            },
-          );
+    var rng = Random();
+    var now = DateTime.now();
+    var actions = ['Action 1', 'Action 2', 'Action 3', 'Action 4', 'Action 5'];
+    for (var i = 0; i < 30; i++) {
+      var day = now.subtract(Duration(days: i));
+      var startOfDay = DateTime(day.year, day.month, day.day);
+      var endOfDay = startOfDay.add(const Duration(days: 1));
+      var start = startOfDay;
+      var entriesCount =
+          rng.nextInt(6) + 1; // Random number of entries between 1 and 6
+      for (var j = 0; j < entriesCount; j++) {
+        if (start.isAfter(endOfDay)) {
+          break;
         }
+        var duration = Duration(minutes: rng.nextInt(10) + 60);
+        var end = start.add(duration);
+        if (end.isAfter(endOfDay)) {
+          break;
+        }
+        var action = actions[rng.nextInt(actions.length)]; // Random action
+        await addChrono(start, end, rng.nextInt(10), action);
+        // Add a gap between the end of the current entry and the start of the next one
+        start = end.add(Duration(minutes: rng.nextInt(10) + 10));
       }
     }
   }
