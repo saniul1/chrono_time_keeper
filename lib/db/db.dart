@@ -116,6 +116,26 @@ class DB extends ChangeNotifier {
     notifyListeners();
   }
 
+  static Future<bool> isDateValueWithinAnyEntry(DateTime dateValue) async {
+    // Get all entries for the day
+    List<Map<String, dynamic>> entries =
+        await DB.instance.getChronoForDay(dateValue);
+
+    // Iterate over all entries
+    for (var entry in entries) {
+      DateTime start = DateTime.parse(entry['start']);
+      DateTime end = DateTime.parse(entry['end']);
+
+      // Check if dateValue is within start and end
+      if (dateValue.isAfter(start) && dateValue.isBefore(end)) {
+        return true;
+      }
+    }
+
+    // If no matching entry was found, return false
+    return false;
+  }
+
   Future<void> _populateWithMockData() async {
     var rng = Random();
     var now = DateTime.now();

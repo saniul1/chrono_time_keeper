@@ -26,13 +26,14 @@ class _CommitAriaState extends State<CommitAria> {
         Row(
           children: [
             TimeStamp(
-              setTime: (isDoubleTap) {
+              setTime: (isDoubleTap) async {
                 final duration = Duration(minutes: sliderValue.value.toInt());
+                DateTime value = DateTime.now().subtract(duration);
                 if (startTime.value != null && !isDoubleTap) {
-                  startTime.value = startTime.value!.subtract(duration);
-                  return;
+                  value = startTime.value!.subtract(duration);
                 }
-                startTime.value = DateTime.now().subtract(duration);
+                if (await DB.isDateValueWithinAnyEntry(value)) return;
+                startTime.value = value;
               },
               buildChild: (context) {
                 final time = CommitData.of(context).start;
@@ -51,18 +52,14 @@ class _CommitAriaState extends State<CommitAria> {
               child: const CommitInfo(),
             ),
             TimeStamp(
-              setTime: (isDoubleTap) {
+              setTime: (isDoubleTap) async {
+                final duration = Duration(minutes: sliderValue.value.toInt());
+                DateTime value = DateTime.now().subtract(duration);
                 if (endTime.value != null && !isDoubleTap) {
-                  final duration = Duration(minutes: sliderValue.value.toInt());
-                  final time = endTime.value!.subtract(duration);
-                  if (startTime.value != null &&
-                      time.isBefore(startTime.value!)) return;
-                  endTime.value = time;
-                  return;
+                  value = endTime.value!.subtract(duration);
                 }
-                if (startTime.value != null &&
-                    DateTime.now().isBefore(startTime.value!)) return;
-                endTime.value = DateTime.now();
+                if (await DB.isDateValueWithinAnyEntry(value)) return;
+                endTime.value = value;
               },
               buildChild: (context) {
                 final time = CommitData.of(context).end;

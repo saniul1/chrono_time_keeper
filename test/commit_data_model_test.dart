@@ -1,4 +1,5 @@
 import 'package:chrono_time_keeper/models/commit_data_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -10,8 +11,7 @@ void main() {
       const breakValue = 15;
       final commit = CommitDataModel(
         id: 1,
-        start: start,
-        end: end,
+        timeRange: DateTimeRange(start: start, end: end),
         breakValue: breakValue,
         action: 'Test Action',
       );
@@ -26,8 +26,7 @@ void main() {
       const breakValue = 15;
       final commit = CommitDataModel(
         id: 1,
-        start: start,
-        end: end,
+        timeRange: DateTimeRange(start: start, end: end),
         breakValue: breakValue,
         action: 'Test Action',
       );
