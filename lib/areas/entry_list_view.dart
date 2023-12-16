@@ -408,7 +408,9 @@ class TimeView extends StatelessWidget {
           data: commits,
           chartType: chartType,
           viewMode: viewMode,
-          activeTooltip: false,
+          activeTooltip: true,
+          tooltipBackgroundColor:
+              Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
         );
       },
     );
