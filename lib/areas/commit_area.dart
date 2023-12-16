@@ -28,7 +28,9 @@ class _CommitAriaState extends State<CommitAria> {
             TimeStamp(
               setTime: (isDoubleTap) async {
                 final duration = Duration(minutes: sliderValue.value.toInt());
-                DateTime value = DateTime.now().subtract(duration);
+                DateTime value = endTime.value != null
+                    ? endTime.value!.subtract(duration)
+                    : DateTime.now().subtract(duration);
                 if (startTime.value != null && !isDoubleTap) {
                   value = startTime.value!.subtract(duration);
                 }
@@ -54,11 +56,14 @@ class _CommitAriaState extends State<CommitAria> {
             TimeStamp(
               setTime: (isDoubleTap) async {
                 final duration = Duration(minutes: sliderValue.value.toInt());
-                DateTime value = DateTime.now().subtract(duration);
+                DateTime value = DateTime.now();
                 if (endTime.value != null && !isDoubleTap) {
                   value = endTime.value!.subtract(duration);
                 }
-                if (await DB.isDateValueWithinAnyEntry(value)) return;
+                if (startTime.value != null &&
+                    value.isBefore(startTime.value!)) {
+                  return;
+                }
                 endTime.value = value;
               },
               buildChild: (context) {
