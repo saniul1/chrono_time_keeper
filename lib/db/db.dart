@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chrono_time_keeper/flavors.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,10 +11,9 @@ class DB extends ChangeNotifier {
   late final Database db;
 
   Future<void> open() async {
-    String dbName = 'chrono_db.db';
-    // String dbName =
-    //     F.appFlavor == Flavor.dev ? 'chrono_db_dev.db' : 'chrono_db.db';
-    // if (F.appFlavor == Flavor.dev) await deleteDatabase(dbName);
+    String dbName =
+        F.appFlavor == Flavor.dev ? 'chrono_db_dev.db' : 'chrono_db.db';
+    if (F.appFlavor == Flavor.dev) await deleteDatabase(dbName);
     db = await openDatabase(
       dbName,
       version: 1,
@@ -29,7 +29,7 @@ class DB extends ChangeNotifier {
 ''');
       },
     );
-    // if (F.appFlavor == Flavor.dev) _populateWithMockData();
+    if (F.appFlavor == Flavor.dev) _populateWithMockData();
     return;
   }
 
