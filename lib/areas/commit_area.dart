@@ -176,10 +176,13 @@ class _CommitAriaState extends State<CommitAria> {
             InkWell(
               onTap: () async {
                 final data = CommitData.of(context);
-                if (data.start != null && actionController.text != '') {
+                final end = data.end ?? DateTime.now();
+                if (data.start == null ||
+                    end.difference(data.start!).inMinutes < 2.0) return;
+                if (actionController.text != '') {
                   await DB.instance.addChrono(
                     data.start!,
-                    data.end ?? DateTime.now(),
+                    end,
                     data.breakBetween?.toInt() ?? 0,
                     actionController.text,
                   );
