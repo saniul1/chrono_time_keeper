@@ -36,7 +36,7 @@ class CommitDataModel {
 
   static List<DateTimeRange> dateRangeFromListOfMap(
       List<Map<String, dynamic>> data) {
-    return data
+    final ranges = data
         .map(
           (map) => DateTimeRange(
             start: DateTime.parse(map['start']),
@@ -44,6 +44,25 @@ class CommitDataModel {
           ),
         )
         .toList();
+    final last = ranges.last;
+    if (last.start.day != last.end.day) {
+      ranges.removeLast();
+      ranges.add(
+        DateTimeRange(
+          start: last.start,
+          end: DateTime(
+              last.start.year, last.start.month, last.start.day, 23, 59, 59),
+        ),
+      );
+      ranges.add(
+        DateTimeRange(
+          start: DateTime(last.end.year, last.end.month, last.end.day, 0, 0, 0),
+          end: last.end,
+        ),
+      );
+    }
+
+    return ranges;
   }
 
   static List<CommitDataModel> fromListOfMap(List<Map<String, dynamic>> data) {
