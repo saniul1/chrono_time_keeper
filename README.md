@@ -1,6 +1,6 @@
 # chrono_time_keeper
 
-A new Flutter project.
+Manual time keeping.
 
 ## Getting Started
 
